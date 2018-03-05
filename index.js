@@ -32,15 +32,15 @@ function ubloxParamsParse(paramsString) {
 
 function fetchUbloxAgpsData(params, tcpOption = { port: config.ubloxPort, host: config.ubloxHost }) {
 	return new Promise((resolve, reject) => {
-		let body = ''
-		const client = net.createConnection(tcpOption, () => {
-			client.write(ubloxParamsStringify(params))
-		})
-		client.on('data', (data) => {
-			body += data
-		})
+                let buf = Buffer.alloc(0)
+                const client = net.createConnection(tcpOption, () => {
+                        client.write(ubloxParamsStringify(params))
+                })
+                client.on('data', (data) => {
+                        buf = Buffer.concat([buf, data])
+                })
 		client.on('end', () => {
-			resolve(body)
+			resolve(buf)
 		})
 		client.on('error', reject)
 	})
@@ -68,11 +68,11 @@ class SocketSession {
 				})
 		})
 	}
-	
+
 	setCache(cache) {
 		this.cache = cache
 	}
-	
+
 	async ensureAndGetNearestCache(params) {
 		assert(params.lat && params.lon, 'params must have lat and lon')
 		assert(this.cache, 'SocketSession cache must not empty. e.g. {content: "", expired: Date.now() }')
