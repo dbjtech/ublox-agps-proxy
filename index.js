@@ -3,6 +3,7 @@ const net = require('net')
 const _ = require('lodash')
 const util = require('util')
 const log = require('brickyard-cli/lib/hack/logger')
+const geoList = require('./geo-list')
 
 log.hackConsole()
 
@@ -13,11 +14,7 @@ const config = {
 	listenPort: process.env.UBLOX_PROXY_LISTEN_PORT || 46434,
 	socketTimeout: process.env.UBLOX_PROXY_SOCKET_TIMEOUT || 20000,
 	cacheTime: process.env.UBLOX_PROXY_CACHE_TIME || 5*60*1000,
-	cacheList: [{
-		lat: 30.45,
-		lon: 114.17,
-		pacc: 1500000,
-	}],
+	cacheList: geoList,
 }
 
 function ubloxParamsStringify(obj) {
