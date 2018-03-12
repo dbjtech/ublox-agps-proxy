@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "brickyard-cli": "^4.6.0",
     "lodash": "^4.17.5"
   }
 }
