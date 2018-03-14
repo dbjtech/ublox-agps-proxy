@@ -2,10 +2,10 @@ const assert = require('assert')
 const net = require('net')
 const _ = require('lodash')
 const util = require('util')
-const log = require('brickyard-cli/lib/hack/logger')
+const logger = require('@brickyard/logger')
 const geoList = require('./geo-list')
 
-log.hackConsole()
+logger.hackConsole()
 
 const config = {
 	ubloxHost: process.env.UBLOX_PROXY_HOST || 'agps.u-blox.com',

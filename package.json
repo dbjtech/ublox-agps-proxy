@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "brickyard-cli": "^4.6.0",
+    "@brickyard/logger": "^0.0.3",
     "lodash": "^4.17.5"
   }
 }
