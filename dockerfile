@@ -5,7 +5,7 @@ RUN apk add tzdata --update --no-cache && cp /usr/share/zoneinfo/Asia/Shanghai /
 COPY . /src/app
 WORKDIR /src/app
 
-RUN npm i && npm cache clean --force
+RUN npm i --production && npm cache clean --force
 
 CMD node .
 

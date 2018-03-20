@@ -13,7 +13,7 @@ const config = {
 	listenHost: process.env.UBLOX_PROXY_LISTEN_HOST || '0.0.0.0',
 	listenPort: process.env.UBLOX_PROXY_LISTEN_PORT || 46434,
 	socketTimeout: process.env.UBLOX_PROXY_SOCKET_TIMEOUT || 20000,
-	cacheTime: process.env.UBLOX_PROXY_CACHE_TIME || 5*60*1000,
+	cacheTime: process.env.UBLOX_PROXY_CACHE_TIME || 5 * 60 * 1000,
 	cacheList: geoList,
 }
 
@@ -23,21 +23,22 @@ function ubloxParamsStringify(obj) {
 }
 
 function ubloxParamsParse(paramsString) {
-	return _.reduce(paramsString.split(';'), (rs, v) => {
-		const split = v.split('=')
-		rs[split[0]] = split[1]
-		return rs
-	}, {})
+	const rs = {}
+	paramsString.split(';').forEach((e) => {
+		const [key, value] = e.split('=')
+		rs[key] = value
+	})
+	return rs
 }
 
 function fetchUbloxAgpsData(params, tcpOption = { port: config.ubloxPort, host: config.ubloxHost }) {
 	return new Promise((resolve, reject) => {
 		let buf = Buffer.alloc(0)
 		const client = net.createConnection(tcpOption, () => {
-				client.write(ubloxParamsStringify(params))
+			client.write(ubloxParamsStringify(params))
 		})
 		client.on('data', (data) => {
-				buf = Buffer.concat([buf, data])
+			buf = Buffer.concat([buf, data])
 		})
 		client.on('end', () => {
 			resolve(buf)
@@ -60,7 +61,7 @@ class SocketSession {
 			const paramsString = data.toString()
 			console.log(`${this.logPrefix} << ${paramsString}`)
 			const params = ubloxParamsParse(paramsString)
-			this.response({params})
+			this.response({ params })
 				.then(() => this.socket.end())
 				.catch((err) => {
 					console.error(`${this.logPrefix} ${err}`)
@@ -79,10 +80,10 @@ class SocketSession {
 	async ensureAndGetNearestCache(params) {
 		assert(params.lat && params.lon, 'params must have lat and lon')
 		assert(this.cache, 'SocketSession cache must not empty. e.g. {content: "", expired: Date.now() }')
-		const nearest = _.minBy(this.cache, (o) => (params.lat - o.lat) * (params.lat - o.lat) + (params.lon - o.lon) * (params.lon - o.lon))
+		const nearest = _.minBy(this.cache, o => ((params.lat - o.lat) * (params.lat - o.lat)) + ((params.lon - o.lon) * (params.lon - o.lon)))
 		if (Date.now() > nearest.expired) {
 			const reqParams = _.assign({}, params, _.pick(nearest, 'lat', 'lon', 'pacc'))
-			nearest.content = await fetchUbloxAgpsData(reqParams, {host: config.ubloxHost, port: config.ubloxPort})
+			nearest.content = await fetchUbloxAgpsData(reqParams, { host: config.ubloxHost, port: config.ubloxPort })
 			nearest.expired = Date.now() + config.cacheTime
 			console.log('Updated Cache', nearest)
 		}
@@ -97,7 +98,7 @@ class SocketSession {
 	}
 }
 
-const ubloxCache = _.map(config.cacheList, (e) => _.assign({}, e, {expired: Date.now()}))
+const ubloxCache = _.map(config.cacheList, e => _.assign({}, e, { expired: Date.now() }))
 const server = net.createServer((socket) => {
 	new SocketSession(socket).setCache(ubloxCache)
 }).on('error', (err) => {
