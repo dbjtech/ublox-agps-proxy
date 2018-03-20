@@ -81,9 +81,14 @@ class SocketSession {
 		assert(params.lat && params.lon, 'params must have lat and lon')
 		assert(this.cache, 'SocketSession cache must not empty. e.g. {content: "", expired: Date.now() }')
 		const nearest = _.minBy(this.cache, o => ((params.lat - o.lat) * (params.lat - o.lat)) + ((params.lon - o.lon) * (params.lon - o.lon)))
-		if (Date.now() > nearest.expired) {
+		if (Date.now() > nearest.expired && !nearest.lock) {
 			const reqParams = _.assign({}, params, _.pick(nearest, 'lat', 'lon', 'pacc'))
-			nearest.content = await fetchUbloxAgpsData(reqParams, { host: config.ubloxHost, port: config.ubloxPort })
+			try {
+				nearest.lock = true
+				nearest.content = await fetchUbloxAgpsData(reqParams, { host: config.ubloxHost, port: config.ubloxPort })
+			} finally {
+				nearest.lock = false
+			}
 			nearest.expired = Date.now() + config.cacheTime
 			console.log('Updated Cache', nearest)
 		}
