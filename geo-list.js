@@ -24,7 +24,7 @@ module.exports = [{
 }, {
 	// Canada
 	lat: 64,
-	lon: 120,
+	lon: -120,
 	pacc: 1500000,
 }, {
 	// Kuwait
