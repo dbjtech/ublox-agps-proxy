@@ -1,5 +1,34 @@
 module.exports = [{
+	// China
 	lat: 30.45,
 	lon: 114.17,
+	pacc: 1500000,
+}, {
+	// Indonesia
+	lat: -0.5616,
+	lon: 102.48015,
+	pacc: 1500000,
+}, {
+	lat: -6.70929,
+	lon: 111.21463,
+	pacc: 1500000,
+}, {
+	lat: -3.90591,
+	lon: 122.41534,
+	pacc: 1500000,
+}, {
+	// America
+	lat: 43,
+	lon: -100,
+	pacc: 1500000,
+}, {
+	// Canada
+	lat: 64,
+	lon: 120,
+	pacc: 1500000,
+}, {
+	// Kuwait
+	lat: 29.36,
+	lon: 47.97,
 	pacc: 1500000,
 }]
