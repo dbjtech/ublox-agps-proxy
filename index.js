@@ -85,7 +85,9 @@ class SocketSession {
 			const reqParams = _.assign({}, params, _.pick(nearest, 'lat', 'lon', 'pacc'))
 			try {
 				nearest.lock = true
-				nearest.content = await fetchUbloxAgpsData(reqParams, { host: config.ubloxHost, port: config.ubloxPort })
+				nearest.content = await fetchUbloxAgpsData(reqParams)
+			} catch (e) {
+				console.error(e.message)
 			} finally {
 				nearest.lock = false
 			}
@@ -97,6 +99,9 @@ class SocketSession {
 
 	async response(req) {
 		const content = await this.ensureAndGetNearestCache(req.params)
+		if (!content) {
+			console.error('Can not fetch ublox agps data')
+		}
 		if (!this.socket.destroyed) {
 			await this.socket.writeAsync(content)
 		}
